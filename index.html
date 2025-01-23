@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="invoice logo.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegacyVerse Invoice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #141e30, #243b55);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            cursor: none; /* Hide default cursor */
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            width: 450px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in-out;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff4747;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border: 2px solid #ff4747;
+            box-shadow: 0 0 10px #ff4747;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff4747;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+        }
+
+        .button:hover {
+            background-color: #d93a3a;
+            transform: translateY(-2px);
+        }
+
+
+        /* Animating cursor movement */
+        .cursor-animated {
+            transform: translate(-50%, -50%);
+            background-color: #d93a3a;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Legacy Verse Invoice</h1>
+        <form id="billingForm">
+            <div class="input-group">
+                <label for="buyer">Discord Username (Buyer)</label>
+                <input type="text" id="buyer" placeholder="e.g., Buyer#1234" required>
+            </div>
+
+            <div class="input-group">
+                <label for="seller">Discord Username (Seller)</label>
+                <input type="text" id="seller" placeholder="e.g., Seller#5678" required>
+            </div>
+
+            <div class="input-group">
+                <label for="plan">Plan</label>
+                <input type="text" id="plan" placeholder="e.g., Diamond Plan" required>
+            </div>
+
+            <div class="input-group">
+                <label for="price">Price (in USD)</label>
+                <input type="number" id="price" placeholder="e.g., 549" required>
+            </div>
+
+            <div class="input-group">
+                <label for="validity">Validity</label>
+                <input type="text" id="validity" placeholder="e.g., 30 Days" required>
+            </div>
+
+            <button type="button" class="button" onclick="generatePDF()">Generate PDF</button>
+        </form>
+    </div>
+
+    <div class="cursor"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+
+            const buyer = document.getElementById('buyer').value;
+            const seller = document.getElementById('seller').value;
+            const plan = document.getElementById('plan').value;
+            const price = document.getElementById('price').value;
+            const validity = document.getElementById('validity').value;
+
+            if (!buyer || !seller || !plan || !price || !validity) {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            const doc = new jsPDF();
+
+            // Header (Left)
+            doc.setFontSize(14);
+            doc.setTextColor('red');
+            doc.text('LegacyVerse', 10, 10);
+            doc.setTextColor('black');
+            doc.text('Email: legacynetwork2255@gmail.com', 10, 16);
+
+            // Customer Details (Right)
+            doc.setFontSize(12);
+            doc.text('Customer Details:', 140, 10);
+            doc.setFontSize(10);
+            doc.text(`Name: ${buyer}`, 140, 16);
+
+            // Plan Details (Horizontal)
+            doc.setFontSize(12);
+            doc.text('Plan Details:', 10, 40);
+
+            doc.setFont('bold');
+            doc.text('Plan:', 10, 50);
+            doc.setFont('normal');
+            doc.text(plan, 50, 50);
+
+            doc.setFont('bold');
+            doc.text('Seller:', 10, 60);
+            doc.setFont('normal');
+            doc.text(seller, 50, 60);
+
+            doc.setFont('bold');
+            doc.text('Price:', 10, 70);
+            doc.setFont('normal');
+            doc.text(`$${price}`, 50, 70);
+
+            doc.setFont('bold');
+            doc.text('Validity:', 10, 80);
+            doc.setFont('normal');
+            doc.text(validity, 50, 80);
+
+            // Terms and Conditions (Footer)
+            doc.setFontSize(10);
+            doc.text('Terms and Conditions: Payment due within 30 days.', 10, 100);
+
+            doc.save('LegacyVerse_Invoice.pdf');
+        }
+
+        
+        document.addEventListener('mouseleave', () => {
+            cursor.classList.remove('cursor-animated');
+        });
+    </script>
+</body>
+</html>
